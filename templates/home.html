@@ -1,0 +1,141 @@
+{%extends 'main.html'%}
+
+{%block content %}
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+#button1,#button2 {
+          display:inline-block;
+          }
+
+</style>
+</head>
+<body>
+ 
+  <h1>Menu</h1>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Quantity</th>
+    </tr>
+
+  <tr>
+    <td >Coffe Name: {{ dic.0.Item_Name }}</td>
+    <td >Price: {{ dic.0.Price }}$</td>
+    <td>
+      <div class="container">
+        <button class="data-decrease" >-</button>
+        
+        <input data-value type="text" value="0" />
+        <input Name type="hidden"  type="text" value="{{dic.0.Item_id}}"/>
+        <button class="data-increase" >+</button>
+      </div>
+  </tr>
+  <tr>
+    <td>Coffe Name: {{ dic.1.Item_Name }}</td>
+    <td>Price: {{ dic.1.Price }}$</td>
+    <td><div class="container">
+      <button class="data-decrease" >-</button> 
+      
+      <input data-value type="text" value="0" />
+      <input Name type="hidden"  type="text" value="{{dic.1.Item_id}}"/>
+      <button class="data-increase" >+</button>
+    </div></td>
+    
+  </tr>
+  <tr>
+    <td>Coffe Name: {{ dic.2.Item_Name }}</td>
+    <td>Price: {{ dic.2.Price }}$</td>
+    <td><div class="container">
+      <button class="data-decrease" >-</button>
+      
+      <input data-value type="text" value="0" />
+      <input Name type="hidden"  type="text" value="{{dic.2.Item_id}}"/>
+      <button class="data-increase" >+</button>
+    </div></td>
+  </tr>  
+  <tr>
+    <td>Coffe Name: {{ dic.3.Item_Name }}</td>
+    <td>Price: {{ dic.3.Price }}$</td>
+    <td><div class="container">
+      <button class="data-decrease" >-</button>
+      
+      <input data-value type="text" value="0" />
+      <input Name type="hidden"  type="text" value="{{dic.3.Item_id}}"/>
+      <button class="data-increase" >+</button>
+    </div></td>
+  </tr>
+</table>
+
+<br>
+<br>
+<button class="addtocart" >AddtoCart</button>
+<br>
+<br>
+<button class="gotocart" >GotoCart</button>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
+  <script type="text/javascript">
+  
+  var postdic={}
+  $(".data-decrease").click(function() {
+	var value = $(this).parent().find('[data-value]').val();
+  var va= $(this).parent().find('[Name]').val();
+	if(value > 0) {
+		value--;
+    postdic[va]=value;
+		$(this).parent().find('[data-value]').val(value);
+    console.log(postdic);
+	}
+});
+
+$(".data-increase").click(function() {
+	var value = $(this).parent().find('[data-value]').val();
+  var va= $(this).parent().find('[Name]').val();
+  
+	if(value < 100) {
+		value++;
+    postdic[va]=value;
+		$(this).parent().find('[data-value]').val(value);
+    console.log(postdic);
+	}
+});
+
+
+$(".addtocart").click(function (){
+  location.reload();
+  $.ajax({
+    url: 'http://127.0.0.1:8000/',
+    type: 'POST',
+    data: postdic,
+})
+});
+
+$(".gotocart").click(function (){
+  location.href = "bill/";
+});
+
+
+
+</script>
+
+{%endblock %}
+</body>
+  
+</html>

@@ -1,0 +1,42 @@
+
+<html>
+    <head>
+    <title>
+        Login
+    </title>
+    </head>
+        <body>
+            <h2>Welcome to CoffeShop</h2>
+            <button onclick="Register()">Register</button>
+            <button onclick="User()">UserLogin</button>
+            <button onclick="Employee()">EmployeeLogin</button>
+            <h3 >Emplopyee Login</h3>
+            <form action=""  method="POST">
+                {% csrf_token %}
+
+            UserName:<input type="text" name="Username"><br><br>
+            Password:<input type="password" name="password"><br><br>
+            <input type="submit">
+    
+    
+            </form>
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
+            <script type="text/javascript">
+            function Register(){
+            debugger;
+            window.location.href='http://127.0.0.1:8000/register/'
+        };
+        function User(){
+            debugger;
+            window.location.href='http://127.0.0.1:8000/user/'
+        };
+    
+        function Employee(){
+            debugger;
+            window.location.href='http://127.0.0.1:8000/employee/'
+        };
+    
+    
+        </script>
+        </body>
+    </html>

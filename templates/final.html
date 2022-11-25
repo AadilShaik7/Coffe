@@ -1,0 +1,66 @@
+{%extends 'main.html'%}
+
+{%block content %}
+<!DOCTYPE html>
+<head>
+<style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+  
+    
+    </style>
+    </head>
+    <body>
+        <h1>Thanks For Ordering</h1>
+        <h2>Previous Orders</h2>
+        <table>
+          <tr>
+            <th>Order Id</th>
+            <th>Quantity</th>
+            <th>Price</th>
+          </tr>
+         {% for x in dic%}
+          <tr>
+            <td >{{ x.order_id }}</td>
+            <td >{{ x.date_of_purchase }}</td>
+            <td >{{ x.price }}$</td>
+            <td>
+          </tr>
+          
+    {% endfor %}
+</table>
+<br>
+<br>
+<button class="Reload" >View All Order History</button>
+<br>
+<br>
+<button class="Home" >Continue Ordering</button>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
+  <script type="text/javascript">
+  
+  $(".Reload").click(function (){
+  location.reload();
+});
+
+$(".Home").click(function (){
+    location.href = "http://127.0.0.1:8000/"
+});
+
+</script>
+
+{%endblock%}
+</body>
+</html>

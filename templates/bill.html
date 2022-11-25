@@ -1,0 +1,90 @@
+{%extends 'main.html'%}
+
+{%block content %}
+<!DOCTYPE html>
+<head>
+<style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+  
+    
+    </style>
+    </head>
+        <h1>Menu</h1>
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Remove</th>
+          </tr>
+         {% for x in dic%}
+          <tr>
+            <td >{{ x.Name }}</td>
+            <td >{{ x.quantity }}</td>
+            <td >{{ x.price }}$</td>
+            <td><div class="container">
+              <input pr type="hidden" type="text" value="{{x.price}}" />
+                <input Name type="hidden" type="text" value="{{x.Item_id}}" />
+                <button class="Remove">x</button>
+              </div></td>
+          </tr>
+          
+    {% endfor %}
+</table>
+<br>
+<br>
+
+  <input id="total"  value="{{dic.0.Total}}" type="hidden"></input>
+  <h2 id="price" style="text-align: center";>Total Price :{{dic.0.Total}}$</h2>
+  <button class="ProceedforPayment" >Checkout</button>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
+  <script type="text/javascript">
+  
+  var postdic
+  $(".Remove").click(function() {
+    var va= $(this).parent().find('[Name]').val();
+    var c=$(this).parent().find('[pr]').val();
+    postdic=va
+    debugger;
+    $(this).closest('tr td.pr');
+    $(this).closest('tr').remove();
+    var total=$('#total').val();
+    total=total-c;
+    $('#price').text('Total Price :'+total+'$');
+    $('#total').val(total);
+    $.ajax({
+    url: 'http://127.0.0.1:8000/bill/',
+    type: 'POST',
+    data: postdic,
+})
+});
+$(".ProceedforPayment").click(function() {
+    
+    $.ajax({
+    url: 'http://127.0.0.1:8000/bill/',
+    type: 'POST',
+    data: "payment",
+})
+window.location.href = 'final/'
+});
+
+
+</script>
+
+{%endblock%}
+</body>
+</html>
