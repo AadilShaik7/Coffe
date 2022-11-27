@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 @csrf_exempt
 def home(request):
@@ -12,6 +13,12 @@ def home(request):
         for i in x:
             
             with connection.cursor() as cursor:
+                cursor.execute("select * from login")
+                columns = [column[0] for column in cursor.description]
+                data = []
+                for row in cursor.fetchall():
+                    data.append(dict(zip(columns, row)))
+                y=int(data[0]['id'])
                 cursor.execute("select * from menu where Item_id = (%s)",
                 [i[0]],
                 )
@@ -20,7 +27,7 @@ def home(request):
                 for row in cursor.fetchall():
                     data.append(dict(zip(columns, row)))
                     p=(int(i[2]))*(int(row[2]))
-                    cursor.callproc('updatecart',[i[0],1,i[2],p])
+                    cursor.callproc('updatecart',[i[0],y,i[2],p])
         return render(request,'home.html',{'dic':data})
 
     else:    
@@ -39,10 +46,18 @@ def bill(request):
         x=str(request.body)
         x=x[2:len(x)-1]
         data=[]
+        with connection.cursor() as cursor:
+            cursor.execute("select * from login")
+            columns = [column[0] for column in cursor.description]
+            data = []
+            for row in cursor.fetchall():
+                data.append(dict(zip(columns, row)))
+            y=int(data[0]['id'])
         if x== "payment":
             with connection.cursor() as cursor:
-                cursor.callproc('payment',[1])
-                cursor.execute("select * from customer_order where CustomerID=1")
+                cursor.callproc('payment',[y])
+                cursor.execute("select * from customer_order where CustomerID=%s",
+                [y])
                 columns = [column[0] for column in cursor.description] 
                 for row in cursor.fetchall():
                     data.append(dict(zip(columns, row)))
@@ -50,7 +65,7 @@ def bill(request):
         else:
             x=int(x)
             with connection.cursor() as cursor:
-                cursor.execute("Delete from cart where Customer_id=1 and Item_id=%s",[x])
+                cursor.execute("Delete from cart where Customer_id=%s and Item_id=%s",[y,x])
                 cursor.execute("select * from cart")
                 columns = [column[0] for column in cursor.description]
                 data = []
@@ -90,13 +105,38 @@ def bill(request):
 
 @csrf_exempt
 def final(request):
-    with connection.cursor() as cursor:
-        cursor.execute("select * from customer_order where CustomerID=1")
-        columns = [column[0] for column in cursor.description]
-        data = []   
-        for row in cursor.fetchall():
-            data.append(dict(zip(columns, row)))
-    return render(request,'final.html',{'dic':data})
+    if request.method=="POST":
+        with connection.cursor() as cursor:
+            cursor.execute("select * from login")
+            columns = [column[0] for column in cursor.description]
+            data = []
+            for row in cursor.fetchall():
+                data.append(dict(zip(columns, row)))
+            y=int(data[0]['id'])
+            print(y)
+            cursor.execute("select * from customer_order where CustomerID=%s",[y])
+            columns = [column[0] for column in cursor.description]
+            data = []   
+            for row in cursor.fetchall():
+                data.append(dict(zip(columns, row)))
+            cursor.execute("delete from login where id=%s",[y])
+        return render(request,'final.html',{'dic':data})
+    else:
+        with connection.cursor() as cursor:
+            cursor.execute("select * from login")
+            columns = [column[0] for column in cursor.description]
+            data = []
+            for row in cursor.fetchall():
+                data.append(dict(zip(columns, row)))
+            y=int(data[0]['id'])
+            print(y)
+            cursor.execute("select * from customer_order where CustomerID=%s",[y])
+            columns = [column[0] for column in cursor.description]
+            data = []   
+            for row in cursor.fetchall():
+                data.append(dict(zip(columns, row)))
+        return render(request,'final.html',{'dic':data})
+
 
 @csrf_exempt
 def login(request):
@@ -119,26 +159,112 @@ def register(request):
 
 @csrf_exempt
 def user(request):
+    response_data = {"is_success":False}
     if request.method=='POST':
-        username=request.POST['Username']
-        pwd=request.POST['password']
+        username=request.POST['Name']
+        pwd=request.POST['Pwd']
         with connection.cursor() as cursor:
             cursor.execute("select * from customer where username=%s and pwd=%s",
             [username,pwd])
             c=0
             x=0
+            
             for row in cursor.fetchall():
                 x=x+1
+                data=[]
+                columns = [column[0] for column in cursor.description]
+                data.append(dict(zip(columns, row)))
+                y=int(data[0]['CustomerID'])
+                if x==1:
+                    response_data["is_success"]=True
+                    cursor.execute("Insert into login values(%s,%s,%s)",
+                    [username,pwd,y])
                 c=row[0]
             cursor.execute("select * from menu")
             columns = [column[0] for column in cursor.description]
             data = []
             for row in cursor.fetchall():
                 data.append(dict(zip(columns, row)))
-        return render(request,'home.html',{'dic':data})
+        return JsonResponse(response_data)
     else:
         return render(request,'user.html')
 
 @csrf_exempt
 def employee(request):
-    return render(request,'employee.html')
+    response_data = {"is_success":False}
+    if request.method=='POST':
+        username=request.POST['Name']
+        pwd=request.POST['Pwd']
+        with connection.cursor() as cursor:
+            cursor.execute("select * from employee where employee_name=%s and pwd=%s",
+            [username,pwd])
+            c=0
+            x=0
+            
+            for row in cursor.fetchall():
+                x=x+1
+                if x==1:
+                    response_data["is_success"]=True
+                c=row[0]
+        return JsonResponse(response_data)
+    else:
+        return render(request,'employee.html')
+
+@csrf_exempt
+def adddetails(request):
+    return render(request,'adddetails.html')
+
+@csrf_exempt
+def additems(request):
+    if request.method=="POST":
+        itemname=request.POST["itemname"]
+        Price=request.POST["price"]
+        with connection.cursor() as cursor:
+            cursor.execute("INSERT into menu(Item_Name,Price) values (%s,%s)",
+            [itemname,Price])
+        return render(request,'adddetails.html')
+    else:    
+        return render(request,'additems.html')
+
+@csrf_exempt
+def removeorders(request):
+    if request.method=='POST':
+        x=str(request.body)
+        x=x[2:len(x)-1]
+        data=[]
+        x=int(x)
+        with connection.cursor() as cursor:
+            cursor.execute("select * from login")
+            columns = [column[0] for column in cursor.description]
+            data = []
+            for row in cursor.fetchall():
+                data.append(dict(zip(columns, row)))
+            cursor.execute("Delete from customer_order where order_id=%s",[x])
+            data = []
+            i=0
+            for row in cursor.fetchall():
+                data.append(dict(zip(columns, row)))
+            s=0
+        return render(request,'adddetails.html')
+    else:
+        with connection.cursor() as cursor:
+            cursor.execute("select * from customer_order")
+            columns = [column[0] for column in cursor.description]
+            data = []
+            i=0
+            for row in cursor.fetchall():
+                data.append(dict(zip(columns, row)))    
+        return render(request,'Removeorders.html',{'dic':data})
+
+
+@csrf_exempt
+def makepayments(request):
+    with connection.cursor() as cursor:
+        cursor.execute("select * from employeePayments")
+        columns = [column[0] for column in cursor.description]
+        data = []
+        i=0
+        for row in cursor.fetchall():
+            data.append(dict(zip(columns, row)))    
+    return render(request,'makepayments.html',{'dic':data})
+    

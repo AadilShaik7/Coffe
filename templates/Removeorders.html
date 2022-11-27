@@ -23,22 +23,21 @@
     
     </style>
     </head>
-        <h1>Menu</h1>
+        <h1>Remove Orders</h1>
         <table>
           <tr>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Price</th>
+            <th>CustomerID</th>
+            <th>DateOfPurchase</th>
+            <th>OrderID</th>
             <th>Remove</th>
           </tr>
          {% for x in dic%}
           <tr>
-            <td >{{ x.Name }}</td>
-            <td >{{ x.quantity }}</td>
-            <td >{{ x.price }}$</td>
+            <td >{{ x.CustomerID }}</td>
+            <td >{{ x.date_of_purchase}}</td>
+            <td >{{ x.order_id}}</td>
             <td><div class="container">
-              <input pr type="hidden" type="text" value="{{x.price}}" />
-                <input Name type="hidden" type="text" value="{{x.Item_id}}" />
+                <input Name type="hidden" type="text" value="{{x.order_id}}" />
                 <button class="Remove">x</button>
               </div></td>
           </tr>
@@ -47,42 +46,22 @@
 </table>
 <br>
 <br>
-
-  <input id="total"  value="{{dic.0.Total}}" type="hidden"></input>
-  <h2 id="price" style="text-align: center";>Total Price :{{dic.0.Total}}$</h2>
-  <button class="ProceedforPayment" >Checkout</button>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
   <script type="text/javascript">
   
   var postdic
   $(".Remove").click(function() {
     var va= $(this).parent().find('[Name]').val();
-    var c=$(this).parent().find('[pr]').val();
     postdic=va
     debugger;
     $(this).closest('tr td.pr');
     $(this).closest('tr').remove();
-    var total=$('#total').val();
-    total=total-c;
-    $('#price').text('Total Price :'+total+'$');
-    $('#total').val(total);
     $.ajax({
-    url: 'http://127.0.0.1:8000/bill/',
+    url: 'http://127.0.0.1:8000/adddetails/removeitems/',
     type: 'POST',
     data: postdic,
 })
 });
-$(".ProceedforPayment").click(function() {
-    
-    $.ajax({
-    url: 'http://127.0.0.1:8000/bill/',
-    type: 'POST',
-    data: "payment",
-})
-window.location.href = 'final/'
-});
-
-
 </script>
 
 {%endblock%}

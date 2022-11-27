@@ -1,0 +1,52 @@
+{%extends 'main.html'%}
+
+{%block content %}
+<!DOCTYPE html>
+<head>
+<style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+  
+    
+    </style>
+    </head>
+        <h1>Payments</h1>
+        <table>
+          <tr>
+            <th>Employee ID</th>
+            <th>Employee Name</th>
+            <th>Hours Worked</th>
+            <th>Hourly Wage</th>
+          </tr>
+         {% for x in dic%}
+          <tr>
+            <td >{{ x.employee_id }}</td>
+            <td >{{ x.employee_name}}</td>
+            <td >{{ x.hoursworked}}</td>
+            <td >{{ x.hourlywage}}</td>
+          </tr>
+          
+    {% endfor %}
+</table>
+<br>
+<br>
+  
+
+</script>
+
+{%endblock%}
+</body>
+</html

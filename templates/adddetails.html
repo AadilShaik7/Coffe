@@ -1,0 +1,28 @@
+<html>
+    <head>
+    <title>
+        Management
+    </title>
+    </head>
+        <body>
+            <h2>Coffee Shop Management</h2>
+            <button onclick="AddItems()">AddItems</button>
+            <button onclick="RemoveItems()">RemoveOrders</button>
+            <button onclick="makepayments()">Makepayments</button>
+            
+
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
+            <script type="text/javascript">
+
+            function AddItems(){
+                window.location.href='http://127.0.0.1:8000/adddetails/additems/'
+            };
+            function RemoveItems(){
+                window.location.href='http://127.0.0.1:8000/adddetails/removeitems/'
+            };
+            function makepayments(){
+                window.location.href='http://127.0.0.1:8000/adddetails/makepayments/'
+            };
+            </script>
+            </body>
+            </html>

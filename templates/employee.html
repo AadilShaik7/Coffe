@@ -1,4 +1,3 @@
-
 <html>
     <head>
     <title>
@@ -11,12 +10,12 @@
             <button onclick="User()">UserLogin</button>
             <button onclick="Employee()">EmployeeLogin</button>
             <h3 >Emplopyee Login</h3>
-            <form action=""  method="POST">
+            
                 {% csrf_token %}
 
-            UserName:<input type="text" name="Username"><br><br>
-            Password:<input type="password" name="password"><br><br>
-            <input type="submit">
+                UserName:<input id="user" type="text" name="Username"><br><br>
+                Password:<input id="password" type="password" name="password"><br><br>
+                <button id="employeelogin">Submit</button>
     
     
             </form>
@@ -35,6 +34,19 @@
             debugger;
             window.location.href='http://127.0.0.1:8000/employee/'
         };
+        $("#employeelogin").click(function (){
+        var postdic={"Name":$("#user").val(),"Pwd":$("#password").val()}
+        $.ajax({
+        url: 'http://127.0.0.1:8000/employee/',
+        type: 'POST',
+        data: postdic,
+        success : function (returned_data) {			
+			if (returned_data.is_success) {
+				location.href='http://127.0.0.1:8000/adddetails'
+			} 
+		}
+        })
+        });
     
     
         </script>

@@ -1,4 +1,3 @@
-
 <html>
     <head>
     <title>
@@ -11,15 +10,13 @@
             <button onclick="User()">UserLogin</button>
             <button onclick="Employee()">EmployeeLogin</button>
             <h3 >User Login</h3>
-            <form action=""  method="POST">
+            
                 {% csrf_token %}
             
-            UserName:<input type="text" name="Username"><br><br>
-            Password:<input type="password" name="password"><br><br>
-            <input type="submit">
+            UserName:<input id="user" type="text" name="Username"><br><br>
+            Password:<input id="password" type="password" name="password"><br><br>
+            <button id="userlogin">Submit</button>
     
-    
-            </form>
             <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
             <script type="text/javascript">
             function Register(){
@@ -34,7 +31,22 @@
             debugger;
             window.location.href='http://127.0.0.1:8000/employee/'
         };
-    
+        
+        $("#userlogin").click(function (){
+        var postdic={"Name":$("#user").val(),"Pwd":$("#password").val()}
+        $.ajax({
+        url: 'http://127.0.0.1:8000/user/',
+        type: 'POST',
+        data: postdic,
+        success : function (returned_data) {			
+			if (returned_data.is_success) {
+				location.href='http://127.0.0.1:8000/'
+			} 
+		}
+        })
+        
+        
+        });
     
         </script>
         </body>

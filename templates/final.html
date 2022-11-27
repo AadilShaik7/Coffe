@@ -47,7 +47,7 @@
 <button class="Reload" >View All Order History</button>
 <br>
 <br>
-<button class="Home" >Continue Ordering</button>
+<button class="Home" >Logout</button>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
   <script type="text/javascript">
   
@@ -56,7 +56,13 @@
 });
 
 $(".Home").click(function (){
-    location.href = "http://127.0.0.1:8000/"
+    
+    $.ajax({
+    url: 'http://127.0.0.1:8000/bill/final/',
+    type: 'POST',
+    data: "postdic",
+})
+location.href = "http://127.0.0.1:8000/login"
 });
 
 </script>
